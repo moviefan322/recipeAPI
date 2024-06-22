@@ -70,7 +70,7 @@ class PrivateRecipeApiTests(TestCase):
         self.user = create_user(email='user@example.com', password='test123')
         self.client.force_authenticate(self.user)
 
-    def retrieve_recipes(self):
+    def test_retrieve_recipes(self):
         """Test retrieving a list of recipes"""
         create_recipe(user=self.user)
         create_recipe(user=self.user)
@@ -79,7 +79,7 @@ class PrivateRecipeApiTests(TestCase):
 
         recipes = Recipe.objects.all().order_by('-id')
         serializer = RecipeSerializer(recipes, many=True)
-        self.assertEqual(res.status, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
     def test_recipe_list_limited_to_user(self):
@@ -201,7 +201,8 @@ class PrivateRecipeApiTests(TestCase):
         """Test creating a recipe with new tags"""
         payload = {
             'title': 'Thai Prawn Curry',
-            'time_minutes': Decimal(2.50),
+            'time_minutes': 60,
+            'price': Decimal(2.50),
             'tags': [{'name': 'Thai'}, {'name': 'Dinner'}]
         }
         res = self.client.post(RECIPES_URL, payload, format='json')
